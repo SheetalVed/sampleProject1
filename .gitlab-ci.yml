@@ -8,8 +8,8 @@ variables:
 
 cache:
   paths:
-    - node_modules/
-    - .pnpm-store/
+    - vue-project/node_modules/
+    - vue-project/.pnpm-store/
 
 install_dependencies:
   stage: install
@@ -23,12 +23,14 @@ run_playwright_tests:
   stage: test
   image: mcr.microsoft.com/playwright:v1.45.1-jammy
   script:
-    - pnpm exec playwright test
+    - |
+    cd vue-project
+    pnpm exec playwright test
   artifacts:
     when: always
     paths:
-      - test-results/
+      - vue-project/test-results/
     reports:
       junit:
-        - test-results/*.xml
+        - vue-project/test-results/*.xml
 
