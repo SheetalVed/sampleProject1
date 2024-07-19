@@ -1,0 +1,34 @@
+stages:
+  - install
+  - test
+
+variables:
+  # Prevent Playwright from downloading browsers when installing dependencies
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
+cache:
+  paths:
+    - node_modules/
+    - .pnpm-store/
+
+install_dependencies:
+  stage: install
+  image: node:18
+  script:
+    - npm install -g pnpm
+    - pnpm install
+    - npx playwright install --with-deps
+
+run_playwright_tests:
+  stage: test
+  image: mcr.microsoft.com/playwright:v1.45.1-jammy
+  script:
+    - pnpm exec playwright test
+  artifacts:
+    when: always
+    paths:
+      - test-results/
+    reports:
+      junit:
+        - test-results/*.xml
+
